@@ -53,10 +53,10 @@ model = load_model(num_classes=len(class_map))
 
 MODEL_PATH = "best_model_fc_layer3_layer4.pth"
 
-# if not os.path.exists(MODEL_PATH):
-file_id = "1YXb14nU9AbGV5o3mUM0W1bOsSOOkos0h"
-url = f"https://drive.google.com/uc?id={file_id}"
-gdown.download(url, MODEL_PATH, quiet=False)
+if not os.path.exists(MODEL_PATH):
+    file_id = "1YXb14nU9AbGV5o3mUM0W1bOsSOOkos0h"
+    url = f"https://drive.google.com/uc?id={file_id}"
+    gdown.download(url, MODEL_PATH, quiet=False)
 
 model.load_state_dict(torch.load("best_model_fc_layer3_layer4.pth", map_location='cpu'))
 
