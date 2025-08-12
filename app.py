@@ -1,4 +1,3 @@
-from utils import estimate_training_time, load_model, load_dataset
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -7,6 +6,26 @@ from PIL import Image
 import streamlit as st
 import gdown
 import os
+from torchvision import models
+
+def load_model(num_classes, weights_path=None):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Load ResNet50 with pretrained ImageNet weights
+    model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V2)
+    model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
+
+    # Optionally load fine-tuned weights
+    if weights_path and os.path.exists(weights_path):
+        state_dict = torch.load(weights_path, map_location=device)
+        model.load_state_dict(state_dict)
+        print(f"✅ Loaded fine-tuned weights from: {weights_path}")
+    else:
+        print("⚠️ No fine-tuned weights provided. Using ImageNet weights only.")
+
+    model.to(device)
+    model.eval()
+    return model
 
 class_map = {
  'DRZWI, OKNA, DEKORACJE': 0,
