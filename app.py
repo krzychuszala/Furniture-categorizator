@@ -5,13 +5,47 @@ import torch.optim as optim
 import torchvision.transforms as T
 from PIL import Image
 import streamlit as st
+import gdown
+import os
 
-data_loader, class_map = load_dataset("data3/data3_test", batch_size=64,split=False, return_paths=True)
+class_map = {
+ 'DRZWI, OKNA, DEKORACJE': 0,
+ 'ELEKTRONIKA, INNE URZĄDZENIA': 1,
+ 'ELEMENTY DEKORACYJNE': 2,
+ 'GRZEJNIKI': 3,
+ 'INNE ELEMENTY WYPOSAŻENIA WNĘTRZ': 4,
+ 'KOMINKI I AKCESORIA': 5,
+ 'KOMODY, KONSOLE, TOALETKI': 6,
+ 'KRZESŁA, HOKERY, TABORETY': 7,
+ 'OGRÓD': 8,
+ 'OŚWIETLENIE': 9,
+ 'REGAŁY, PÓŁKI, WITRYNY': 10,
+ 'SIEDZISKA': 11,
+ 'SPORT I ROZRYWKA': 12,
+ 'STOŁY, STOLIKI': 13,
+ 'SYMBOLE ARCHITEKTONICZNO-BUDOWLANE': 14,
+ 'SZAFY, SZAFKI': 15,
+ 'TEKSTYLIA': 16,
+ 'WYPOSAŻENIE BIURA': 17,
+ 'WYPOSAŻENIE KUCHNI': 18,
+ 'WYPOSAŻENIE POKOJU DZIECIĘCEGO': 19,
+ 'WYPOSAŻENIE ŁAZIENEK': 20,
+ 'ŁÓŻKA': 21
+}
+
 model = load_model(num_classes=len(class_map))
+
+MODEL_PATH = "best_model_fc_layer3_layer4.pth"
+
+# if not os.path.exists(MODEL_PATH):
+file_id = "1YXb14nU9AbGV5o3mUM0W1bOsSOOkos0h"
+url = f"https://drive.google.com/uc?id={file_id}"
+gdown.download(url, MODEL_PATH, quiet=False)
+
 model.load_state_dict(torch.load("best_model_fc_layer3_layer4.pth"))
 model.eval()
 
-class_names = data_loader.dataset.classes
+class_names = ['DRZWI, OKNA, DEKORACJE', 'ELEKTRONIKA, INNE URZĄDZENIA', 'ELEMENTY DEKORACYJNE', 'GRZEJNIKI', 'INNE ELEMENTY WYPOSAŻENIA WNĘTRZ', 'KOMINKI I AKCESORIA', 'KOMODY, KONSOLE, TOALETKI', 'KRZESŁA, HOKERY, TABORETY', 'OGRÓD', 'OŚWIETLENIE', 'REGAŁY, PÓŁKI, WITRYNY', 'SIEDZISKA', 'SPORT I ROZRYWKA', 'STOŁY, STOLIKI', 'SYMBOLE ARCHITEKTONICZNO-BUDOWLANE', 'SZAFY, SZAFKI', 'TEKSTYLIA', 'WYPOSAŻENIE BIURA', 'WYPOSAŻENIE KUCHNI', 'WYPOSAŻENIE POKOJU DZIECIĘCEGO', 'WYPOSAŻENIE ŁAZIENEK', 'ŁÓŻKA']
 
 image_size = 224
 
