@@ -77,6 +77,10 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 model.eval()
 
+st.sidebar.title("Categories")
+for category in class_names:
+    st.sidebar.write(category)
+
 st.title("Furniture Classifier")
 uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 if uploaded_file:
