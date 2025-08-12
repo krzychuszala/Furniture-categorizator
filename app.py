@@ -9,7 +9,6 @@ import os
 from torchvision import models
 
 def load_model(num_classes, weights_path=None):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Load ResNet50 with pretrained ImageNet weights
     model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V2)
@@ -22,8 +21,6 @@ def load_model(num_classes, weights_path=None):
         print(f"✅ Loaded fine-tuned weights from: {weights_path}")
     else:
         print("⚠️ No fine-tuned weights provided. Using ImageNet weights only.")
-
-    model.to(device)
     model.eval()
     return model
 
@@ -61,7 +58,8 @@ file_id = "1YXb14nU9AbGV5o3mUM0W1bOsSOOkos0h"
 url = f"https://drive.google.com/uc?id={file_id}"
 gdown.download(url, MODEL_PATH, quiet=False)
 
-model.load_state_dict(torch.load("best_model_fc_layer3_layer4.pth"))
+model.load_state_dict(torch.load("best_model_fc_layer3_layer4.pth", map_location='cpu'))
+
 model.eval()
 
 class_names = ['DRZWI, OKNA, DEKORACJE', 'ELEKTRONIKA, INNE URZĄDZENIA', 'ELEMENTY DEKORACYJNE', 'GRZEJNIKI', 'INNE ELEMENTY WYPOSAŻENIA WNĘTRZ', 'KOMINKI I AKCESORIA', 'KOMODY, KONSOLE, TOALETKI', 'KRZESŁA, HOKERY, TABORETY', 'OGRÓD', 'OŚWIETLENIE', 'REGAŁY, PÓŁKI, WITRYNY', 'SIEDZISKA', 'SPORT I ROZRYWKA', 'STOŁY, STOLIKI', 'SYMBOLE ARCHITEKTONICZNO-BUDOWLANE', 'SZAFY, SZAFKI', 'TEKSTYLIA', 'WYPOSAŻENIE BIURA', 'WYPOSAŻENIE KUCHNI', 'WYPOSAŻENIE POKOJU DZIECIĘCEGO', 'WYPOSAŻENIE ŁAZIENEK', 'ŁÓŻKA']
