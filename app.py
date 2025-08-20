@@ -7,6 +7,39 @@ import streamlit as st
 import gdown
 import os
 from torchvision import models
+from torchvision.models import EfficientNet_V2_S_Weights
+
+def load_efficientnet_v2_s(num_classes, weights_path=None):
+    """
+    Loads an EfficientNet_V2_S model with pretrained ImageNet weights,
+    replaces the final classification layer, and optionally loads custom fine-tuned weights.
+
+    Parameters:
+    - num_classes (int): Number of output classes.
+    - weights_path (str): Path to .pth file with saved model weights (state_dict).
+
+    Returns:
+    - model (torch.nn.Module): The model ready for inference or training.
+    """
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Load EfficientNet_V2_S with ImageNet pretrained weights
+    model = models.efficientnet_v2_s(weights=EfficientNet_V2_S_Weights.IMAGENET1K_V1)
+
+    # Replace classification head
+    model.classifier[1] = nn.Linear(model.classifier[1].in_features, num_classes)
+
+    # Optionally load fine-tuned weights
+    if weights_path and os.path.exists(weights_path):
+        state_dict = torch.load(weights_path, map_location=device)
+        model.load_state_dict(state_dict, strict=False)
+        print(f"✅ Loaded fine-tuned weights from: {weights_path}")
+    else:
+        print("⚠️ No fine-tuned weights provided. Using ImageNet weights only.")
+
+    model.to(device)
+    model.eval()
+    return model
 
 def load_model(num_classes, weights_path=None):
 
@@ -58,7 +91,7 @@ MODEL_PATH = "efficientnet_v2_s_fc_layer3_layer4.pth"
 #     url = f"https://drive.google.com/uc?id={file_id}"
 #     gdown.download(url, MODEL_PATH, quiet=False)
 
-# 1gqEyVjfYBT9Lbr7VXmUxL_dLPpU3tt6H
+# 1j9HjVa8jhzV71XPEonBgr5RVqbcU39nQ 1gqEyVjfYBT9Lbr7VXmUxL_dLPpU3tt6H
 if not os.path.exists(MODEL_PATH):
     file_id = "1j9HjVa8jhzV71XPEonBgr5RVqbcU39nQ"
     url = f"https://drive.google.com/uc?id={file_id}"
