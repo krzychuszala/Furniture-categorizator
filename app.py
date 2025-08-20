@@ -82,7 +82,7 @@ class_map = {
  'ŁÓŻKA': 21
 }
 
-model = load_model(num_classes=len(class_map))
+model = load_efficientnet_v2_s(num_classes=len(class_map))
 
 MODEL_PATH = "efficientnet_v2_s_fc_layer3_layer4.pth"
 
@@ -97,7 +97,6 @@ if not os.path.exists(MODEL_PATH):
     url = f"https://drive.google.com/uc?id={file_id}"
     gdown.download(url, MODEL_PATH, quiet=False)
 
-model = load_efficientnet_v2_s(num_classes=len(class_map))
 model.load_state_dict(torch.load("efficientnet_v2_s_fc_layer3_layer4.pth"))
 
 model.eval()
