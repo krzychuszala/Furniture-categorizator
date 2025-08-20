@@ -51,14 +51,20 @@ class_map = {
 
 model = load_model(num_classes=len(class_map))
 
-MODEL_PATH = "best_model_fc_layer3_layer4.pth"
+MODEL_PATH = "efficientnet_v2_s_fc_layer3_layer4.pth"
 
+# if not os.path.exists(MODEL_PATH):
+#     file_id = "1YXb14nU9AbGV5o3mUM0W1bOsSOOkos0h"
+#     url = f"https://drive.google.com/uc?id={file_id}"
+#     gdown.download(url, MODEL_PATH, quiet=False)
+
+# 1gqEyVjfYBT9Lbr7VXmUxL_dLPpU3tt6H
 if not os.path.exists(MODEL_PATH):
-    file_id = "1YXb14nU9AbGV5o3mUM0W1bOsSOOkos0h"
+    file_id = "1j9HjVa8jhzV71XPEonBgr5RVqbcU39nQ"
     url = f"https://drive.google.com/uc?id={file_id}"
     gdown.download(url, MODEL_PATH, quiet=False)
 
-model.load_state_dict(torch.load("best_model_fc_layer3_layer4.pth", map_location='cpu'))
+model.load_state_dict(torch.load("efficientnet_v2_s_fc_layer3_layer4.pth", map_location='cpu'))
 
 model.eval()
 
