@@ -16,7 +16,8 @@ scope = ["https://www.googleapis.com/auth/spreadsheets","https://www.googleapis.
 
 creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope)
 client = gspread.authorize(creds)
-sheet = client.open_by_url("YOUR_SHEET_URL").sheet1et = client.open_by_url("https://docs.google.com/spreadsheets/d/1xeW01_Xr9-IS3yfGkVKy1gaX6bxpGUG58h5Uq9XvWYk/edit").sheet1
+sheet_id = "1xeW01_Xr9-IS3yfGkVKy1gaX6bxpGUG58h5Uq9XvWYk"
+sheet = client.open_by_key(sheet_id).sheet1
 
 # ======================
 # MODEL + CLASSES
