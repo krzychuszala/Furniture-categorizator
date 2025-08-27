@@ -9,16 +9,14 @@ from torchvision import models
 from torchvision.models import EfficientNet_V2_S_Weights
 
 # === NEW: Google Sheets imports ===
-import gspread
 from google.oauth2.service_account import Credentials
+import gspread
 
-scope = ["https://www.googleapis.com/auth/spreadsheets",
-         "https://www.googleapis.com/auth/drive"]
+scope = ["https://www.googleapis.com/auth/spreadsheets","https://www.googleapis.com/auth/drive"]
 
-creds = Credentials.from_service_account_file("streamlite_app/service_account.json", scopes=scope)
+creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope)
 client = gspread.authorize(creds)
-
-sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1xeW01_Xr9-IS3yfGkVKy1gaX6bxpGUG58h5Uq9XvWYk/edit").sheet1
+sheet = client.open_by_url("YOUR_SHEET_URL").sheet1et = client.open_by_url("https://docs.google.com/spreadsheets/d/1xeW01_Xr9-IS3yfGkVKy1gaX6bxpGUG58h5Uq9XvWYk/edit").sheet1
 
 # ======================
 # MODEL + CLASSES
