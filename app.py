@@ -94,19 +94,27 @@ if uploaded_file:
     # User selects true class
     true_label = st.selectbox("Select the correct class:", class_names)
 
-    if st.button("✅ Save to Google Sheet"):
-        filename = uploaded_file.name
-        top_pred = class_names[topk.indices[0]]
-        is_correct = (top_pred == true_label)
+if st.button("✅ Save to Google Sheet"):
+    filename = uploaded_file.name
+    top_pred = class_names[topk.indices[0]]
+    is_correct = (top_pred == true_label)
 
-        # Append row to your Google Sheet
-        sheet.append_row([
-            filename,
-            true_label,
-            top_pred,
-            str(is_correct),
-            "; ".join(pred_list)
-        ])
+    # Prepare separate columns for top 5 predictions and their percentages
+    top_labels = [class_names[idx] for idx in topk.indices]
+    top_scores = [f"{score.item()*100:.1f}%" for score in topk.values]
 
-        st.success("✅ Saved result to Google Sheet!")
+    # Append row to Google Sheet
+    sheet.append_row([
+        filename,
+        true_label,
+        top_pred,
+        str(is_correct),
+        # Add each top label
+        *top_labels,
+        # Add each top score
+        *top_scores
+    ])
+
+    st.success("✅ Saved result to Google Sheet!")
+
 
