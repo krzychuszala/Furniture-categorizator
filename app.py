@@ -11,13 +11,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # === NEW: Google Sheets imports ===
-import gspread
+import json
+import streamlit as st
 from google.oauth2.service_account import Credentials
 
-scope = ["https://www.googleapis.com/auth/spreadsheets",
-         "https://www.googleapis.com/auth/drive"]
+scope = ["https://spreadsheets.google.com/feeds","https://www.googleapis.com/auth/drive"]
 
-creds = Credentials.from_service_account_file("streamlite_app/service_account.json", scopes=scope)
+creds = Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"], scopes=scope
+)
+
 client = gspread.authorize(creds)
 
 sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1xeW01_Xr9-IS3yfGkVKy1gaX6bxpGUG58h5Uq9XvWYk/edit").sheet1
