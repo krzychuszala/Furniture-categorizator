@@ -77,9 +77,18 @@ sidebar_placeholder = st.sidebar.empty()
 chart_container = st.empty()  # will contain both buttons + histogram
 
 def update_stats():
-    data = pd.DataFrame(sheet.get_all_records())
-    data.columns = data.columns.str.strip()
-    category_counts = data['True Label'].value_counts()
+    records = sheet.get_all_records()
+    if not records:  # empty sheet (no rows, only headers)
+        data = pd.DataFrame(columns=[
+            "Filename","True Label","Top Prediction","Correct?",
+            "Top1 Label","Top2 Label","Top3 Label","Top4 Label","Top5 Label",
+            "Top1 Score","Top2 Score","Top3 Score","Top4 Score","Top5 Score"
+        ])
+        category_counts = pd.Series(dtype=int)
+    else:
+        data = pd.DataFrame(records)
+        data.columns = data.columns.str.strip()
+        category_counts = data['True Label'].value_counts()
     return data, category_counts
 
 # --- Initial data ---
