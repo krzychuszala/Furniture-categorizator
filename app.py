@@ -156,9 +156,12 @@ chart_container = st.container()
 # --- Initial histogram below buttons ---
 with chart_container.container():
     st.write("### Images per Category Histogram")
-    fig, ax = plt.subplots(figsize=(8, 10))
-    category_counts.plot(kind='barh', ax=ax, color='skyblue')
-    ax.set_xlabel("Number of Images")
-    ax.set_ylabel("Category")
-    ax.set_title("Images per Category")
-    st.pyplot(fig)
+    if not category_counts.empty:
+        fig, ax = plt.subplots(figsize=(8, 10))
+        category_counts.plot(kind='barh', ax=ax, color='skyblue')
+        ax.set_xlabel("Number of Images")
+        ax.set_ylabel("Category")
+        ax.set_title("Images per Category")
+        st.pyplot(fig)
+    else:
+        st.info("No data yet. Upload an image and save a result to populate the histogram.")
