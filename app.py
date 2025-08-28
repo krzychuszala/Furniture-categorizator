@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 # === NEW: Google Sheets imports ===
 import json
-import streamlit as st
+import gspread
 from google.oauth2.service_account import Credentials
 
 scope = ["https://spreadsheets.google.com/feeds","https://www.googleapis.com/auth/drive"]
