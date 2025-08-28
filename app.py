@@ -7,17 +7,20 @@ import gdown
 import os
 from torchvision import models
 from torchvision.models import EfficientNet_V2_S_Weights
+import pandas as pd
+import matplotlib.pyplot as plt
 
 # === NEW: Google Sheets imports ===
-from google.oauth2.service_account import Credentials
 import gspread
+from google.oauth2.service_account import Credentials
 
-scope = ["https://www.googleapis.com/auth/spreadsheets","https://www.googleapis.com/auth/drive"]
+scope = ["https://www.googleapis.com/auth/spreadsheets",
+         "https://www.googleapis.com/auth/drive"]
 
-creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope)
+creds = Credentials.from_service_account_file("streamlite_app/service_account.json", scopes=scope)
 client = gspread.authorize(creds)
-sheet_id = "1xeW01_Xr9-IS3yfGkVKy1gaX6bxpGUG58h5Uq9XvWYk"
-sheet = client.open_by_key(sheet_id).sheet1
+
+sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1xeW01_Xr9-IS3yfGkVKy1gaX6bxpGUG58h5Uq9XvWYk/edit").sheet1
 
 # ======================
 # MODEL + CLASSES
@@ -66,9 +69,25 @@ model.eval()
 # ======================
 # STREAMLIT UI
 # ======================
-st.sidebar.title("Categories")
-for c in class_names:
-    st.sidebar.write(c)
+
+sidebar_placeholder = st.sidebar.empty()
+chart_container = st.empty()  # will contain both buttons + histogram
+
+def update_stats():
+    data = pd.DataFrame(sheet.get_all_records())
+    data.columns = data.columns.str.strip()
+    category_counts = data['True Label'].value_counts()
+    return data, category_counts
+
+# --- Initial data ---
+data, category_counts = update_stats()
+
+# --- Sidebar list ---
+with sidebar_placeholder.container():
+    st.sidebar.title("Categories")
+    for c in class_names:
+        count = category_counts.get(c, 0)
+        st.sidebar.write(f"{c} ({count})")
 
 st.title("Furniture Classifier")
 
@@ -115,6 +134,19 @@ if st.button("✅ Save to Google Sheet"):
         *top_scores
     ])
 
+    # Refresh stats
+    data, category_counts = update_stats()
+
     st.success("✅ Saved result to Google Sheet!")
 
+chart_container = st.container()
 
+# --- Initial histogram below buttons ---
+with chart_container.container():
+    st.write("### Images per Category Histogram")
+    fig, ax = plt.subplots(figsize=(8, 10))
+    category_counts.plot(kind='barh', ax=ax, color='skyblue')
+    ax.set_xlabel("Number of Images")
+    ax.set_ylabel("Category")
+    ax.set_title("Images per Category")
+    st.pyplot(fig)
